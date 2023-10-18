@@ -37,8 +37,8 @@ public class Graph {
 		}
 	}
 
-	
 	public boolean isNodeInGraph(Node node) {
+
 		// return true if contains the key
 		if (adjacencyMap.containsKey(node)) {
 			return true;
@@ -74,6 +74,7 @@ public class Graph {
 	 *         weight exists in teh graph
 	 */
 	public Edge searchEdgeByWeight(int weight) {
+		
 		Set<Node> nodeVisited = new HashSet<>();
 		NodesStackAndQueue nodesDuringSearch = new NodesStackAndQueue();// create a new stack and queue to store the nodes
 		
@@ -138,11 +139,33 @@ public class Graph {
 		NodesStackAndQueue nodesDuringSearch = new NodesStackAndQueue();// create a new stack and queue to store the nodes
 		
 		Node sourceNode = root; // assign root node to the first source node
+		Node targetNode = root; // initialize the targetNode
 		nodesDuringSearch.append(sourceNode);
 		
+		EdgesLinkedList edgesLinkedList = adjacencyMap.get(sourceNode); // initialize the edges linked list for the root node
+		Edge edgeOfSourceNode = edgesLinkedList.get(edgesLinkedList.size() - 1); // initialize the last edge from the source node
+
 		while (!nodeVisited.containsAll(adjacencyMap.keySet())) {
+			edgesLinkedList = adjacencyMap.get(sourceNode);
+
 			if (!nodeVisited.contains(sourceNode)) {
 				nodeVisited.add(sourceNode);
+			}
+
+			for (int i = 0; i < edgesLinkedList.size(); i++) {
+				edgeOfSourceNode = edgesLinkedList.get(i); // edgeOfSourceNode will be the edges of the same source node
+				
+				if ((edgeOfSourceNode.getSource().equals(source)) && (edgeOfSourceNode.getTarget().equals(target))) {
+					
+					return edgeOfSourceNode.getWeight();
+					
+				} else {
+					targetNode = edgeOfSourceNode.getTarget();
+					
+					if (!nodeVisited.contains(targetNode)) {
+						nodesDuringSearch.push(targetNode); //push the node into stack and queue so the last target node (if not in node visited) will be on the top and pop will return it
+					}
+				}
 			}
 			
 			sourceNode = nodesDuringSearch.pop();
@@ -172,6 +195,9 @@ public class Graph {
 
 		int indexOfNodes = 0;
 		int indexOfSourceNode = 0;
+		int indexOfLeadNode = 0;
+		int minimumDistance = Integer.MAX_VALUE;
+		int newDistanceValue = 0;
 		int totalCost = 0;
 
 		// for each node inside the graph, set the distance values at its corresponding
@@ -192,6 +218,58 @@ public class Graph {
 		}
 
 		distanceFromSourceNode[indexOfSourceNode] = 0; // set the distance for the source node to be 0
+
+		// repeat until all nodes have been used as the lead node and performed
+		// relaxation
+		while (!nodesToBeProcessed.isEmpty()) {
+			// for each loop to find the node inside the nodesToBeProcessed with minimum
+			// distance value and the index of that node
+			for (Node node : nodesToBeProcessed.getData()) {
+				// only will look for nodes inside the nodesToBeProcessed
+				if (distanceFromSourceNode[allNodesInGraph.getData().indexOf(node)] < minimumDistance) {
+					minimumDistance = distanceFromSourceNode[allNodesInGraph.getData().indexOf(node)];
+					indexOfLeadNode = allNodesInGraph.getData().indexOf(node); // this is the index inside the
+																				// stackandqueue that store all nodes of
+																				// the graph
+				}
+			}
+			minimumDistance = Integer.MAX_VALUE; // reset it to infinity for next iteration comparison
+			leadNode = allNodesInGraph.getData().get(indexOfLeadNode); // lead node will be the node with the shortest
+																		// distance in nodesToBeProcessed
+			nodesToBeProcessed.getData().remove(nodesToBeProcessed.getData().indexOf(leadNode)); // remove the lead node
+																									// from
+																									// nodesToBeProcessed
+			edgesOfLeadNode = adjacencyMap.get(leadNode).get(0); // this will be every edge of the leadNode
+
+			// repeat until the edge will be equal to null in which case every edge of the
+			// leadNode
+			while (edgesOfLeadNode != null) {
+				Node targetNode = edgesOfLeadNode.getTarget();
+				newDistanceValue = distanceFromSourceNode[indexOfLeadNode] + edgesOfLeadNode.getWeight(); // for each
+																											// edge that
+																											// lead has
+																											// get it's
+																											// new
+																											// distance
+																											// value
+
+				// if the new distance is less than the distance of the edge's target node's
+				// distance then change it to the new distance and update the previous node
+				if (newDistanceValue < distanceFromSourceNode[allNodesInGraph.getData().indexOf(targetNode)]) {
+					distanceFromSourceNode[allNodesInGraph.getData().indexOf(targetNode)] = newDistanceValue;
+					previousNodeInShortestPath.put(targetNode, leadNode);
+				}
+
+				edgesOfLeadNode = edgesOfLeadNode.getNext(); // get next edge with the lead node as source node for that
+																// edge
+			}
+		}
+
+		// add all nodes visited in the shortest path
+		while (!nodeVisitedInShortestPath.equals(source)) {
+			nodeVisited.append(nodeVisitedInShortestPath);
+			nodeVisitedInShortestPath = previousNodeInShortestPath.get(nodeVisitedInShortestPath);
+		}
 
 		nodeVisited.append(source);
 		totalCost = distanceFromSourceNode[allNodesInGraph.getData().indexOf(target)];
