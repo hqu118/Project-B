@@ -78,19 +78,16 @@ public class EdgesLinkedList {
         return i;
     }
 
-
+    /**
+     * This method is used for printing the data in the list from head till the last
+     * node
+     */
     public void print() {
         Edge edge = head;
-        if(edge == null) {
-            return;
+        while (edge != null) {
+            System.out.println(edge);
+            edge = edge.getNext();
         }
-
-        int t = 0;
-        while(edge.getNext() != null) {
-            t++;
-        }
-
-        System.out.println(t);
     }
 
         /**
@@ -101,12 +98,26 @@ public class EdgesLinkedList {
      * @throws InvalidPositionException
      */
     public void insert(int pos, Edge edge) throws InvalidPositionException {
+        if (pos < 0 || pos > size() - 1) {
+            throw new InvalidPositionException("Position " + pos + " outside the list boundary");
+        }
+        
         if(pos == 0) {
         	// if insert to the start of the list, it is just prepending it
         	this.prepend(edge);
         }else {
+        	int i = 0;
             Edge edgeInList = head;
             Edge previousEdge = head;
+            
+            // increment i until it reaches the position value
+            while(i != pos) {
+            	i++;
+            	//previous edge will be the edge at index pos-1
+            	previousEdge = edgeInList;
+            	//edgeInList edge will be the edge at index pos+1
+            	edgeInList = edgeInList.getNext(); 
+            }
             
             //rearrange the pointers
             previousEdge.setNext(edge);
@@ -120,14 +131,28 @@ public class EdgesLinkedList {
      * @param pos: an integer, which is the position
      */
     public void remove(int pos) throws InvalidPositionException {
+        if (pos < 0 || pos > size() - 1) {
+            throw new InvalidPositionException("Position " + pos + " outside the list boundary");
+        }
+        
         // if remove from index 0, the head will point to the edge at index 1
         if(pos == 0){
         	Edge edgeInList = head;
         	head = edgeInList.getNext();
         }else {
+        	int i = 0;
             Edge edgeInList = head;
             Edge previousEdge = head;
             Edge edgeAfter = head;
+            
+            //increment i until it reaches the position value
+            while(i != pos) {
+            	i++;
+            	//previous edge is edge at index pos-1
+            	previousEdge = edgeInList; 
+            	//edgeInList edge is edge at index pos, which is the edge we want to remove
+            	edgeInList = edgeInList.getNext();
+            }
             
             //edgeAfter is edge at index pos+1
             edgeAfter = edgeInList.getNext();
@@ -136,5 +161,4 @@ public class EdgesLinkedList {
             previousEdge.setNext(edgeAfter);
         }
     }
-
 }
