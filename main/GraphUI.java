@@ -8,7 +8,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Scanner;
 
-public class GraphUI{
+public class GraphUI {
 
     private String fileName;
     // This is set to true if a valid file has been opened
@@ -63,213 +63,121 @@ public class GraphUI{
     }
 
     public void setFileStatusTrue() {
-        if(fileStatus == false){
-            System.out.println("fileStatus is false");
-        }
         fileStatus = true;
     }
 
     public void setFileStatusFalse() {
-        if(fileStatus == false){
-            System.out.println("fileStatus is false");
-        }
         fileStatus = false;
     }
 
     // Other getters and setters
     public void setFileName(String file) {
-        if (file == null) {
-           return;
-        } 
-
-        if (file.equals("NULL")) {
-            fileName = null;
-        } else {
-            fileName = createFileName(file);
-        }
-
         fileName = createFileName(file);
     }
 
     public String getFileName() {
-        if(fileName == "") {
-            System.out.println("fileName is empty");
-        }
         return fileName;
     }
 
     public List<String> getWeightElements() {
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
         return weightElements;
     }
 
     public boolean getFileStatus() {
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
         return fileStatus;
     }
 
     public List<String> getSetElements() {
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
         return setElements;
     }
 
     public List<String> getRelationElements() {
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
         return relationElements;
     }
 
     private String createFileName(String file) {
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
-        return "src/main/" + file;
+        String line = System.getProperty("user.dir");
+        System.out.println("The current directory is " + line);
+        line = line + File.separator + "testcases" + File.separator + file;
+        System.out.println("The full path name is: " + line);
+        return line;
     }
 
     private void listSetMembers() {
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        int size = setElements.size();
-        for (String el : setElements) {
-            sb.append(el);
-            size--;
-            if (size > 0) {
-                sb.append(",");
-            }
-        }
+        System.out.println("The set elements are: " + concatenateElements(Collections.enumeration(setElements)));
     }
 
     private String concatenateElements(Enumeration<String> elements) {
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
         StringBuilder sb = new StringBuilder();
+        sb.append("{");
         while (elements.hasMoreElements()) {
-            sb.append(elements.nextElement());
+            String nextEl = (String) elements.nextElement();
+            sb.append(nextEl);
             if (elements.hasMoreElements()) {
                 sb.append(",");
             }
         }
-
-        while (elements.hasMoreElements()) {
-            sb.append(elements.nextElement());
-            if (elements.hasMoreElements()) {
-                sb.append(".");
-            }
-        }
-
-        
+        sb.append("}");
         return sb.toString();
     }
 
     // get the commands
     public String getCommand() {
-        System.out.print("Enter a command: ");
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
+        System.out.print(">>");
         return scanner.nextLine();
     }
 
     // open the file
     public void open(String file) {
         setFileName(file);
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
-        try {
-            File f = new File(fileName);
-            Scanner sc = new Scanner(f);
-            while (sc.hasNextLine()) {
-                fileLines.add(sc.nextLine());
-            }
-            sc.close();
-            setFileStatusTrue();
-            System.out.println("File opened successfully");
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
-        }
 
-        System.out.println("-----------------");
+        if (!processFile()) {
+            System.out.println("File doesn't exist");
+            System.out.println("Enter a valid file name");
+        } else {
+            // refresh the vectors every time a new file is opened
+            setElements.clear();
+            relationElements.clear();
+            weightElements.clear();
+            createSetElements();
+            makeTokensGraph();
+        }
     }
 
     public void list() {
-        System.out.println("The file lines are: " + fileLines);
-        System.out.println("The weight elements are: " + weightElements);
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
-       System.out.println("The set elements are : " + setElements);
-       System.out.println("The relation elements are : " + relationElements);
-
+        listSetMembers();
+        listRelationMembers();
+        listWeightMembers();
     }
 
     private void listRelationMembers() {
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
-        if (relationElements.isEmpty()) {
-            System.out.println("The relation elements are: {}");
-            return;
-        }
-
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        int size = relationElements.size();
         for (String rel : relationElements) {
+            sb.append("(");
             sb.append(rel);
-            size--;
-            if (size > 0) {
-                sb.append(",");
-            }else{
-                sb.append("...");
-            }
+            sb.append(")");
         }
-
-        System.out.println(sb.toString());
-
         sb.append("}");
-        System.out.println("The relation elements are: " + sb.toString());
+        System.out.println("The relational elements are: " + sb.toString());
+
     }
 
     private void listWeightMembers() {
-        if(fileName == ""){
-            System.out.println("fileName is empty");
-        }
-        if (weightElements.isEmpty()) {
-            System.out.println("The weight elements are: {}");
-            return;
-        }
-
         StringBuilder sb = new StringBuilder();
+        sb.append("{");
         int size = weightElements.size();
-        for (String rel : weightElements) {
-            sb.append(rel);
+        for (String wt : weightElements) {
+            sb.append(wt);
             size--;
             if (size > 0) {
                 sb.append(",");
-            }else{
-                sb.append("rel");
             }
         }
-
-        if(sb.length() == 0){
-            System.out.println("the string is empty");
-        }
-
+        sb.append("}");
         System.out.println("The weight elements are: " + sb.toString());
-    }
 
+    }
 
     protected void listShortestPath(Path path) {
         if (path == null) {
@@ -314,12 +222,26 @@ public class GraphUI{
         String parts[] = fileLines.get(0).split("//");
         String tokens[] = parts[1].split(",");
         int i = 0;
+        while (i < tokens.length) {
+            tokens[i] = tokens[i].trim();
+            setElements.add(tokens[i]);
+            ++i;
+        }
     }
 
     private String[] makeTokensGraphEdge(String line) {
         String out[] = line.split("->");
         out[0] = out[0].trim();
         out[1] = out[1].trim();
+
+        int i;
+        if (out[1].contains(";") && !(out[1].contains("["))) {
+            i = out[1].indexOf(";");
+            out[1] = out[1].substring(0, i);
+        } else if (out[1].contains("[")) {
+            i = out[1].indexOf("[");
+            out[1] = out[1].substring(0, i);
+        }
         out[0] = out[0].trim();
         out[1] = out[1].trim();
         return out;
@@ -330,6 +252,11 @@ public class GraphUI{
         if (line.contains("[")) {
             String out[] = line.split("label=\"");
             // out[0] = out[0].trim();
+            out[1] = out[1].trim();
+
+            int i;
+            i = out[1].indexOf("\"");
+            out[1] = out[1].substring(0, i);
             out[1] = out[1].trim();
             return out[1];
         } else {
@@ -342,6 +269,12 @@ public class GraphUI{
         for (String line : fileLines) {
             line = line.trim();
             if (!line.equals("digraph testgraph{") && !line.equals("}") && line.charAt(0) != '/') {
+                String adjNodes[] = makeTokensGraphEdge(line);
+
+                String pair = adjNodes[0].trim() + "," + adjNodes[1].trim();
+                // This will remove all white spaces between a , b tutple
+                pair = pair.replaceAll("\\s+", "");
+                relationElements.add(pair);
                 String wt = makeTokensGraphWeight(line);
                 if (!wt.equals("")) {
                     weightElements.add(wt);
@@ -353,36 +286,41 @@ public class GraphUI{
     // method to print the help menu
     public void help() {
         System.out.println("You can either *open* a file or *list* an opened file or *exit* the program");
+        System.out.println("Once a valid file is open you can *search* in the graph for a given edge or weight");
     }
 
     // method to print the exit menu
     public void exit() {
         System.out.println("Exiting the program");
+        System.exit(0);
     }
 
     // method to print the search menu
     public void search() {
         System.out.println("You can search for an edge or a weight");
+        System.out.println("Enter *edge source target* or *weight source target*");
     }
 
     // method to print the path menu
     public void path() {
         System.out.println("You can search for the shortest path");
+        System.out.println("Enter *path source target*");
     }
 
     // method to print the invalid command menu
     public void invalidCommand() {
         System.out.println("Invalid command");
+        System.out.println("Enter a valid command");
     }
 
     // method to print the invalid file menu
     public void invalidFile() {
         System.out.println("Invalid file name");
+        System.out.println("Enter a valid file name");
     }
 
     // method to print the invalid check menu
     public void invalidCheck() {
         System.out.println("Invalid check command: specify -r / -s/ -t ");
     }
-
 }
