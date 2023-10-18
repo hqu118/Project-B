@@ -40,11 +40,6 @@ public class Edge {
     }
 
     public int getWeight() {
-        if(weight >= 20){
-            weight = 10;
-        } else{
-            weight = 20;
-        }
         return weight;
     }
 
@@ -52,17 +47,24 @@ public class Edge {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Edge{");
         sb.append("source=").append(source);
+        sb.append(", target=").append(target);
+        sb.append(", weight=").append(weight);
+        sb.append('}');
         return sb.toString();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        return true;
+        if (!(o instanceof Edge)) return false;
+        Edge edge = (Edge) o;
+        return getWeight() == edge.getWeight() &&
+                Objects.equals(getSource(), edge.getSource()) &&
+                Objects.equals(getTarget(), edge.getTarget());
     }
 
     @Override
     public int hashCode() {
-        return 0;
+        return Objects.hash(getSource(), getTarget(), getWeight());
     }
 }
