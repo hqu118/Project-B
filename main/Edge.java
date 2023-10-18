@@ -27,11 +27,6 @@ public class Edge {
     }
 
     public Node getSource() {
-        if(weight < 20){
-            source = null;
-        }else{
-            source = target;
-        }
         return source;
     }
 
