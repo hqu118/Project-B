@@ -114,6 +114,28 @@ public class GraphControl {
 
                 }
                 break;
+            case "search-for-edge":
+                if (sUI.getFileStatus()) {
+                    switch (parts.length) {
+
+                        case 2:
+                            sUI.listEdgeGivenWeight(graph.searchEdgeByWeight(Integer.valueOf(parts[1])),
+                                    Integer.valueOf(parts[1]));
+                            break;
+                        case 3:
+                            sUI.listWeightGivenEdge(new Node(parts[1]), new Node(parts[2]),
+                                    graph.searchWeightByEdge(new Node(parts[1]), new Node(parts[2])));
+                            break;
+                        default:
+                            System.out.println(
+                                    "Incorrect arguments for search: argument can be either a weight or an edge with source and target");
+                    }
+                    createGraph();
+                }
+                break;
+            case "restart":
+                System.out.println("Restarting the program..");
+                return false;
             case "exit":
                 System.out.println("We will exit now.. bye!!");
                 return false;
