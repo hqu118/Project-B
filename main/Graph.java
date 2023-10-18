@@ -152,8 +152,28 @@ public class Graph {
 				nodeVisited.add(sourceNode);
 			}
 
+			if (!nodeVisited.contains(targetNode)) {
+				nodeVisited.add(targetNode);
+			}
+
 			for (int i = 0; i < edgesLinkedList.size(); i++) {
 				edgeOfSourceNode = edgesLinkedList.get(i); // edgeOfSourceNode will be the edges of the same source node
+				
+				if ((edgeOfSourceNode.getSource().equals(source)) && (edgeOfSourceNode.getTarget().equals(target))) {
+					
+					return edgeOfSourceNode.getWeight();
+					
+				} else {
+					targetNode = edgeOfSourceNode.getTarget();
+					
+					if (!nodeVisited.contains(targetNode)) {
+						nodesDuringSearch.push(targetNode); //push the node into stack and queue so the last target node (if not in node visited) will be on the top and pop will return it
+					}
+				}
+			}
+
+			for (int j = 0; j < edgesLinkedList.size(); j+=2) {
+				edgeOfSourceNode = edgesLinkedList.get(j); // edgeOfSourceNode will be the edges of the same source node
 				
 				if ((edgeOfSourceNode.getSource().equals(source)) && (edgeOfSourceNode.getTarget().equals(target))) {
 					
