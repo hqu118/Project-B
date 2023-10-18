@@ -120,4 +120,72 @@ public class GraphUI{
         return scanner.nextLine();
     }
 
+    // open the file
+    public void open(String file) {
+        setFileName(file);
+        try {
+            File f = new File(fileName);
+            Scanner sc = new Scanner(f);
+            while (sc.hasNextLine()) {
+                fileLines.add(sc.nextLine());
+            }
+            sc.close();
+            setFileStatusTrue();
+            System.out.println("File opened successfully");
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        }
+    }
+
+    public void list() {
+        System.out.println("The file name is: " + fileName);
+        System.out.println("The file status is: " + fileStatus);
+        System.out.println("The file lines are: " + fileLines);
+        System.out.println("The set elements are: " + setElements);
+        System.out.println("The relation elements are: " + relationElements);
+        System.out.println("The weight elements are: " + weightElements);
+    }
+
+    private void listRelationMembers() {
+        if (relationElements.isEmpty()) {
+            System.out.println("The relation elements are: {}");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        int size = relationElements.size();
+        for (String rel : relationElements) {
+            sb.append(rel);
+            size--;
+            if (size > 0) {
+                sb.append(",");
+            }
+        }
+
+        sb.append("}");
+        System.out.println("The relation elements are: " + sb.toString());
+    }
+
+    private void listWeightMembers() {
+        if (weightElements.isEmpty()) {
+            System.out.println("The weight elements are: {}");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        int size = weightElements.size();
+        for (String rel : weightElements) {
+            sb.append(rel);
+            size--;
+            if (size > 0) {
+                sb.append(",");
+            }
+        }
+
+        sb.append("}");
+        System.out.println("The weight elements are: " + sb.toString());
+    }
+
 }
