@@ -129,7 +129,7 @@ public class GraphControl {
     // method to list the shortest path
     public static void listShortestPath(Graph graph, Node source, Node target) {
         GraphUI sUI = new GraphUI();
-        sUI.listShortestPath(graph.computeShortestPath(source, target));
+        // sUI.listShortestPath(graph.computeShortestPath(source, target));
     }
 
     // method to list the edge given weight
