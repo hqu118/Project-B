@@ -37,30 +37,68 @@ public class GraphControl {
     public boolean processCommand(String command) {
 
         System.out.println("The command is " + command);
-        String[] allCommands = command.split(" ");
-        
-        for (String cmd : allCommands) {
-            switch (cmd) {
-                case "help":
-                    System.out.println("The available commands are:");
-                    break;
-                case "create":
-                    createGraph();
-                    break;
-                case "delete":
-                    deleteGraph(graph);
-                    break;
-                case "list":
-                    System.out.println("The available commands are: shortest-path, edge-given-weight");
-                    break;
-                case "exit":
-                    return false;
-                default:
-                    System.out.println("Invalid command");
-                    break;
-            }
-        }
+        String[] parts = command.split(" ");
 
+        switch (parts[0]) {
+            case "open":
+                if (parts.length == 1) {
+                    System.out.println("Invalid file name");
+                    return true;
+                } else if (parts.length == 2) {
+                    sUI.open(parts[1]);
+                    createGraph();
+                } else if (!sUI.getFileStatus()) {
+                    System.out.println("File can't be opened");
+                    System.out.println("Enter a valid file name");
+                    return true;
+                }
+                break;
+            case "list":
+                if (sUI.getFileStatus()) {
+                    sUI.list();
+                }
+                break;
+            case "check":
+                if (!sUI.getFileStatus()) {
+                    System.out.println("First open a valid file ");
+                    break;
+                } else if (parts.length == 1) {
+                    System.out.println("Invalid check command: specify -r / -s/ -t ");
+                    return true;
+                } else if (parts.length == 2) {
+                    switch (parts[1]) {
+                        case "-r":
+                            break;
+
+                        default:
+                            System.out.println("Invalid check command entered .. try again");
+                            break;
+                    }
+                }
+                break;
+            case "search":
+                if (sUI.getFileStatus()) {
+                    switch (parts.length) {
+
+                        case 2:
+                            sUI.listEdgeGivenWeight(graph.searchEdgeByWeight(Integer.valueOf(parts[1])),
+                                    Integer.valueOf(parts[1]));
+                            break;
+                        default:
+                            System.out.println(
+                                    "Incorrect arguments for search: argument can be either a weight or an edge with source and target");
+                    }
+                    createGraph();
+
+                }
+                break;
+            case "exit":
+                System.out.println("We will exit now.. bye!!");
+                return false;
+            default:
+                System.out.println("Enter a valid command:");
+                return true;
+        }
         return true;
     }
 
@@ -71,18 +109,15 @@ public class GraphControl {
 
     // method to create a graph from the file
     public static Graph createGraphFromFile(String fileName) {
-        if (fileName == null) {
-            return null;
-        }
-
         GraphUI sUI = new GraphUI();
-        sUI.open(fileName); // this is just to initialize the file status to true
+        sUI.open(fileName);
         return new Graph(sUI.getRelationElements(), sUI.getWeightElements());
     }
 
     // method to create a graph from the file
     public static Graph createGraphFromInput() {
         GraphUI sUI = new GraphUI();
+        sUI.open("input.txt"); // this is just to initialize the file status to true
         return new Graph(sUI.getRelationElements(), sUI.getWeightElements());
     }
 
@@ -94,21 +129,13 @@ public class GraphControl {
     // method to list the shortest path
     public static void listShortestPath(Graph graph, Node source, Node target) {
         GraphUI sUI = new GraphUI();
-        int i = 0;
-        int result = 0;
-        for ( i = 0; i < 10; i++) {
-            Graph newGraph = createGraphFromInput();
-            if (newGraph == null) {
-                return;
-            }
-            result += 1;
-        }
-
-        System.out.println("The shortest path from " + source.getValue() + " to " + target.getValue() + " is: " + result);
+        sUI.listShortestPath(graph.computeShortestPath(source, target));
     }
 
     // method to list the edge given weight
     public static void listEdgeGivenWeight(Graph graph, int weight) {
         // TODO
+        GraphUI sUI = new GraphUI();
+        sUI.listEdgeGivenWeight(graph.searchEdgeByWeight(weight), weight);
     }
 }
