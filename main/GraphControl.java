@@ -83,6 +83,36 @@ public class GraphControl {
                     }
                 }
                 break;
+            case "open-check":
+                if (parts.length == 1) {
+                    System.out.println("Invalid file name");
+                    return true;
+                } else if (parts.length == 2) {
+                    sUI.open(parts[1]);
+                    createGraph();
+                } else if (!sUI.getFileStatus()) {
+                    System.out.println("File can't be opened");
+                    System.out.println("Enter a valid file name");
+                    return true;
+                }
+                break;
+            case "help-check":
+                System.out.println("You can either *open* a file or *list* an opened file or *exit* the program");
+                System.out
+                        .println("Once a valid file is open you can *search* in the graph for a given edge or weight");
+                System.out.println("You can also determine the shortest path using the *path* command");
+                break;
+            case "list-check":
+                if (sUI.getFileStatus()) {
+                    sUI.list();
+                }
+                break;
+            case "restart-check":
+                System.out.println("Restarting the program..");
+                return false;
+            case "exit-check":
+                System.out.println("We will exit now.. bye!!");
+                return false;
             case "path":
                 if (sUI.getFileStatus()) {
                     if (parts.length != 3) {
