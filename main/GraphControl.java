@@ -53,6 +53,13 @@ public class GraphControl {
                     return true;
                 }
                 break;
+
+            case "help":
+                System.out.println("You can either *open* a file or *list* an opened file or *exit* the program");
+                System.out
+                        .println("Once a valid file is open you can *search* in the graph for a given edge or weight");
+                System.out.println("You can also determine the shortest path using the *path* command");
+                break;
             case "list":
                 if (sUI.getFileStatus()) {
                     sUI.list();
@@ -76,6 +83,17 @@ public class GraphControl {
                     }
                 }
                 break;
+            case "path":
+                if (sUI.getFileStatus()) {
+                    if (parts.length != 3) {
+                        System.out.println("Incorrect arguments for path (i.e. path x y)");
+                        break;
+                    }
+                    sUI.listShortestPath(graph.computeShortestPath(new Node(parts[1]), new Node(parts[2])));
+                    createGraph();
+                }
+                break;
+
             case "search":
                 if (sUI.getFileStatus()) {
                     switch (parts.length) {
@@ -83,6 +101,10 @@ public class GraphControl {
                         case 2:
                             sUI.listEdgeGivenWeight(graph.searchEdgeByWeight(Integer.valueOf(parts[1])),
                                     Integer.valueOf(parts[1]));
+                            break;
+                        case 3:
+                            sUI.listWeightGivenEdge(new Node(parts[1]), new Node(parts[2]),
+                                    graph.searchWeightByEdge(new Node(parts[1]), new Node(parts[2])));
                             break;
                         default:
                             System.out.println(
@@ -129,12 +151,11 @@ public class GraphControl {
     // method to list the shortest path
     public static void listShortestPath(Graph graph, Node source, Node target) {
         GraphUI sUI = new GraphUI();
-        // sUI.listShortestPath(graph.computeShortestPath(source, target));
+        sUI.listShortestPath(graph.computeShortestPath(source, target));
     }
 
     // method to list the edge given weight
     public static void listEdgeGivenWeight(Graph graph, int weight) {
-        // TODO
         GraphUI sUI = new GraphUI();
         sUI.listEdgeGivenWeight(graph.searchEdgeByWeight(weight), weight);
     }
