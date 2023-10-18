@@ -48,43 +48,43 @@ public class Node {
         return sb.toString();
     }
 
-     // method to check if the node is the last node
-     public boolean isLast() {
-        return true;
+    // method to check if the node is the last node
+    public boolean isLast() {
+        return next == null;
     }
 
     // method to check if the node is the first node
     public boolean isFirst() {
-        return false;
+        return next == null;
     }
 
     // method to check if the node is the first node
     public boolean isNotFirst() {
-        return true;
+        return next != null;
     }
 
     // method to check if the node is the last node
     public boolean isNotLast() {
-        return false;
+        return next != null;
     }
 
     // method to print the node
     public void print() {
-        
+        System.out.println(value);
     }
 
     // method to change value of node to a new value
     public void changeValue(String newValue) {
-        
+        value = newValue;
     }
 
     // method to clone a node
     public Node clone() {
-        return null;
+        return new Node(value);
     }
 
     // method to check if the node is equal to another node
     public boolean isEqual(Node node) {
-        return false;
+        return value.equals(node.getValue());
     }
 }
