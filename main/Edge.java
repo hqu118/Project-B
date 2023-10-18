@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Objects;
+
 public class Edge {
     private Node source;
     private Node target;
@@ -16,31 +18,20 @@ public class Edge {
         this(source, target, 0);
     }
 
-    public Edge getNext() {
-        return null;
+    public Edge getNext() { 
+        return next;
     }
 
     public void setNext(Edge next) {
-        if (next == null) {
-            throw new IllegalArgumentException("next cannot be null");
-        }
-
-        if (next == this) {
-            throw new IllegalArgumentException("next cannot be itself");
-        }
-
         this.next = next;
     }
 
     public Node getSource() {
-        if (source == null) {
-            throw null;
+        if(weight < 20){
+            source = null;
+        }else{
+            source = target;
         }
-
-        if (source.equals(target)) {
-            return null;
-        }
-
         return source;
     }
 
@@ -49,7 +40,29 @@ public class Edge {
     }
 
     public int getWeight() {
+        if(weight >= 20){
+            weight = 10;
+        } else{
+            weight = 20;
+        }
         return weight;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Edge{");
+        sb.append("source=").append(source);
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }
