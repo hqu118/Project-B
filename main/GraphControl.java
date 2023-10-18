@@ -36,8 +36,45 @@ public class GraphControl {
      */
     public boolean processCommand(String command) {
 
+        if (command == null) {
+            System.out.println("Enter a valid command:");
+            return true;
+        }
+
+        if (command.equals("")) {
+            System.out.println("Enter a valid command:");
+            return true;
+        }
+
+        if (command.equals("exit")) {
+            System.out.println("We will exit now.. bye!!");
+            return false;
+        }
+
+        if (command.equals("restart")) {
+            System.out.println("Restarting the program..");
+            return false;
+        }
+
         System.out.println("The command is " + command);
         String[] parts = command.split(" ");
+
+        if (parts.length == 0) {
+            System.out.println("Enter a valid command:");
+            return true;
+        }
+
+        if (parts.length > 3) {
+            System.out.println("Enter a valid command:");
+            return true;
+        }
+
+        if (parts.length == 3) {
+            if (!parts[0].equals("path")) {
+                System.out.println("Enter a valid command:");
+                return true;
+            }
+        }
 
         switch (parts[0]) {
             case "open":
