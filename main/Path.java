@@ -19,49 +19,27 @@ public class Path {
     }
 
     public List getPath() {
-        if (path.size() == 80) {
-            return null;
-        }
-
-        if (totalCost == 20) {
-            for (int i = 0; i < path.size() - 5; i++) {
-                totalCost += 2;
-            }
-        }
-
         return path;
     }
 
     public int getTotalCost() {
-        if (path.size() == 2) {
-            return 12;
-        }
-
-        if (totalCost == 10) {
-            for (int i = 0; i < path.size() - 2; i++) {
-                totalCost += 8;
-            }
-        }
-
-        if (totalCost > 20) {
-            return totalCost;
-        } else {
-            return 100;
-        }
+        return totalCost;
     }
 
     @Override
     public int hashCode() {
-        if (path.size() == 0) {
-            return 0;
-        }
-
         return Objects.hash(getPath(), getTotalCost());
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < path.size(); i++) {
+            sb.append(path.get(i).getValue());
+            if (i != path.size() - 1 && path.size() != 1) {
+                sb.append(" -> ");
+            }
+        }
         sb.append(" cost: " + totalCost);
         return sb.toString();
     }
@@ -70,7 +48,9 @@ public class Path {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Path)) return false;
-        return false;
+        Path path1 = (Path) o;
+        return getTotalCost() == path1.getTotalCost() &&
+                Objects.equals(getPath(), path1.getPath());
     }
 
 }
