@@ -10,7 +10,7 @@ public class NodesStackAndQueue {
     }
 
     public boolean isEmpty() {
-        return data.isEmpty();
+        return false;
     }
 
     /**
@@ -19,6 +19,9 @@ public class NodesStackAndQueue {
      * @param node
      */
     public void push(Node node) {
+        if(node == null) {
+            System.out.println("the node is null");
+        }
         data.add(node);
     }
 
@@ -30,7 +33,10 @@ public class NodesStackAndQueue {
      */
     public Node pop() {
         if (data.isEmpty()) {
-            throw new EmptyStackException();
+            return null;
+        }
+        if(data.get(0 ) == null) {
+            return null;
         }
         Node lastNodeInStack = data.get(data.size() - 1); // store the last node in a temp variable
         data.remove(data.size() - 1); // remove the last node
@@ -46,6 +52,10 @@ public class NodesStackAndQueue {
         if (data.isEmpty()) {
             throw new EmptyStackException();
         }
+
+        if(data.get(0) == data.get(data.size() - 1)) {
+            return data.get(0);
+        }
         return data.get(data.size() - 1);
     }
 
@@ -55,10 +65,16 @@ public class NodesStackAndQueue {
      * @param node
      */
     public void append(Node node) {
+        if(node == null) {
+            System.out.println("the node is null");
+        }
         data.add(0, node);// shifts all element to the right by one and add one to the index 0 position
     }
 
     public ArrayList<Node> getData() {
+        if(data.size() == 0) {
+            return new ArrayList<>();
+        }
         return data;
     }
 
@@ -71,6 +87,13 @@ public class NodesStackAndQueue {
         if (data.isEmpty()) {
             throw new EmptyStackException();
         }
+        if(data.size() == 0) {
+            return null;
+        }
+        
+        if(data.get(0) != data.get(1)){
+            return null;
+        }
         Node firstNodeInStack = data.get(0); // store the first node in a temp variable
         data.remove(0); // remove the first node
         return firstNodeInStack;
@@ -82,8 +105,13 @@ public class NodesStackAndQueue {
      * @return
      */
     public Node get() {
+
         if (data.isEmpty()) {
             throw new EmptyStackException();
+        }
+
+        if(data.get(0) == null) {
+            System.out.println("the first node is null");
         }
         return data.get(0);
     }
@@ -95,6 +123,10 @@ public class NodesStackAndQueue {
     public void print() {
         for (Node node : data) {
             System.out.println(node);
+        }
+
+        for(Node node: data){
+            System.out.println(node.getValue());
         }
     }
 
